@@ -8,18 +8,6 @@
 using namespace std;
 
 
-Vec color(const Ray &r, Hitable *world) {  // return color
-    HitRecord rec;
-    if (world->hit(r, 0.0, numeric_limits<float>::max(), rec)) {
-        return 0.5 * Vec(rec.normal.x() + 1, rec.normal.y() + 1, rec.normal.z() + 1);
-    }
-
-    Vec unit_direction = unit_vector(r.direction());
-    float t = 0.5 * (unit_direction.y() + 1.0);
-    return (1.0 - t) * Vec(1.0, 1.0, 1.0) + t * Vec(0.5, 0.7, 1.0);  // interpolation between white and blue
-}
-
-
 class Randomizer {
     private:
         random_device rd;
@@ -36,6 +24,30 @@ class Randomizer {
             return dis(gen);
         }
 };
+
+
+Vec random_in_unit_sphere(Randomizer &rand) {
+    Vec s;
+
+    do {
+        s = 2.0 * Vec(rand.get_random_number(), rand.get_random_number(), rand.get_random_number()) - Vec(1, 1, 1);
+    } while (s.squared_length() >= 1.0);
+
+    return s;
+}
+
+
+Vec color(const Ray &r, Hitable *world, Randomizer &rand) {  // return color
+    HitRecord rec;
+    if (world->hit(r, 0.001, numeric_limits<float>::max(), rec)) {  // if hits one of hitable objects in world
+        Vec target = rec.p + rec.normal + random_in_unit_sphere(rand);
+        return 0.7 * color(Ray(rec.p, target - rec.p), world, rand);  // coef means reduce of intencity of the reflected light
+    }
+
+    Vec unit_direction = unit_vector(r.direction());
+    float t = 0.5 * (unit_direction.y() + 1.0);
+    return (1.0 - t) * Vec(1.0, 1.0, 1.0) + t * Vec(0.5, 0.7, 1.0);  // interpolation between white and blue
+}
 
 
 int main() {
@@ -61,21 +73,21 @@ int main() {
     Randomizer rand;
 
     for (int j = ny - 1; j >= 0; j--) {
+        cout << "j: " << j << endl;
         for (int i = 0; i < nx; i++) {
             Vec c(0, 0, 0);
-            cout << "i: " << i << "  j: " << j << endl;
 
             for (int s = 0; s < ns; s++) {
                 float u = float(i + rand.get_random_number()) / float(nx);
                 float v = float(j + rand.get_random_number()) / float (ny);   
                 Ray r = camera.get_ray(u, v);
-                c = c + color(r, world);
+                c = c + color(r, world, rand);
             }
 
             c = c / float(ns);
-            int ir = int(255.0 * c.r());
-            int ig = int(255.0 * c.g());
-            int ib = int(255.0 * c.b());
+            int ir = int(255.0 * sqrt(c.r()));
+            int ig = int(255.0 * sqrt(c.g()));
+            int ib = int(255.0 * sqrt(c.b()));
             out << ir << " " << ig << " " << ib << "\n"; 
         }
     }
