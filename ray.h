@@ -8,10 +8,7 @@ class Ray {
         Vec b;
 
         Ray() {};
-        Ray(const Vec &a, const Vec &b) {
-            this->a = a;
-            this->b = b;
-        };
+        Ray(const Vec &a, const Vec &b): a(a), b(b) {};
 
         Vec origin() const {return a;};
         Vec direction() const {return b;};

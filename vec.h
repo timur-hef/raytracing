@@ -4,6 +4,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <iostream>
+#include <randomizer.h>
 
 class Vec {
     public:
@@ -136,6 +137,20 @@ inline Vec& Vec::operator/=(const float t) {
 
 inline Vec unit_vector(Vec v) {
     return v / v.length();
+}
+
+inline Vec reflect(const Vec &v, const Vec &n) {
+    return v - 2 * dot(v, n) * n;
+}
+
+Vec random_in_unit_sphere() {
+    Vec s;
+
+    do {
+        s = 2.0 * Vec(Randomizer::get_random_number(), Randomizer::get_random_number(), Randomizer::get_random_number()) - Vec(1, 1, 1);
+    } while (s.squared_length() >= 1.0);
+
+    return s;
 }
 
 #endif

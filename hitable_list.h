@@ -10,10 +10,7 @@ class HitableList: public Hitable {
         int list_size;
 
         HitableList() {};
-        HitableList(Hitable **l, int n) {
-            list = l;
-            list_size = n;
-        }
+        HitableList(Hitable **l, int n): list(l), list_size(n) {};
 
         virtual bool hit(const Ray &r, float tmin, float tmax, HitRecord &rec) const;
 };
