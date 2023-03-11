@@ -2,7 +2,7 @@
 #define SPHEREH
 
 #include <hitable.h>
-#include <iostream>
+
 
 class Sphere: public Hitable {
     public:

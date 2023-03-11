@@ -5,7 +5,6 @@
 #include <material.h>
 #include <randomizer.h>
 #include <sphere.h>
-#include <typeinfo>
 
 using namespace std;
 
@@ -45,8 +44,8 @@ int main() {
     Hitable *list[4];
     list[0] = new Sphere(Vec(0, 0, -1), 0.5, new Lambertian(Vec(0.8, 0.3, 0.3)));
     list[1] = new Sphere(Vec(0, -100.5, -1), 100, new Lambertian(Vec(0.8, 0.8, 0.0)));
-    list[2] = new Sphere(Vec(1, 0, -1), 0.5, new Metal(Vec(0.8, 0.6, 0.2)));
-    list[3] = new Sphere(Vec(-1, 0, -1), 0.5, new Metal(Vec(0.8, 0.8, 0.8)));
+    list[2] = new Sphere(Vec(1, 0, -1), 0.5, new Metal(Vec(0.8, 0.8, 0.8), 1.0));
+    list[3] = new Sphere(Vec(-1, 0, -1), 0.5, new Metal(Vec(0.5, 0.8, 0.2), 0.3));
     Hitable *world = new HitableList(list, 4);
     Camera camera;
     
